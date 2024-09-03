@@ -34,26 +34,24 @@ def switcht_case(pos,cursor, df_excel):
     elif pos == 5:
         return productivity(cursor, df_excel)
 
-list_excel = [
+list_excel = (
         'Users',
         'Tasks',
         'CheckInCheckOut',
         'Projects',
         'Boxes',
         'Productivity'
-    ]
+    )
 
 def main():
-
-    #Read db configutation doc
-    #configdb = configparser.ConfigParser()
-    #configdb.read('configdb.ini')
 
     #Db credentials
     db_host = 'localhost'
     db_user = 'root'
     db_password = 'Lfpp0811.*'
     db_name = 'productivity_app'
+
+
 
     pos = 0
     while pos >= 0:
@@ -67,7 +65,11 @@ def main():
             #print(df_excel)
     
         #db connection
-        connection = connect_to_database(db_host,db_user,db_password,db_name)
+        try:
+            connection = connect_to_database(db_host,db_user,db_password,db_name)
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+
         cursor = connection.cursor()
 
         #Update or add table selected
