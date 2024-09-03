@@ -1,0 +1,30 @@
+python -m pip install --<<upgrade>> pip --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org
+
+https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4
+
+#Conectar a la BD
+conexion = mysql.connector.connect(
+    host='localhost',
+    user='root',
+    password='Lfpp0811.*',
+    database='productivity_app'
+)
+cursor = conexion.cursor()
+
+
+
+
+# Cerrar la conexión
+cursor.close()
+conexion.close()
+
+
+#conectar a la BD
+dialecto = 'mysql'
+usuario = 'root'
+contraseña = 'Lfpp0811.*'
+host = 'localhost'  # O la dirección IP de tu servidor
+nombre_bd = 'productivity_app'
+
+# Crear la cadena de conexión
+engine = create_engine(f'{dialecto}://{usuario}:{contraseña}@{host}/{nombre_bd}')
