@@ -1,3 +1,11 @@
+import pandas as pd
+
+def excel():
+    excel_file = pd.ExcelFile('PRODUCTION_test.xlsx')
+    sheet_names = excel_file.sheet_names
+    return sheet_names
+
+
 excel = ['Users','CheckInCheckOut','Task','Projects','Boxes','Productivity']
 sql = {
     'users':'caNumber',

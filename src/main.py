@@ -1,16 +1,16 @@
 import pandas as pd
 import mysql.connector
 from sqlalchemy import create_engine
-from menu import menu
+from menu import sheet_number,sheet_names_excel
 from update_or_insert import users,tasks,checkinout,projects,boxes,productivity
 import configparser
 #import MySQLdb
 
-#Fun to read the excel book
+#Func to read the excel book
 def read_excel(file_path, sheet_name):
     return pd.read_excel(file_path,sheet_name=sheet_name)
 
-#fun to conect the db
+#func to conect the db
 def connect_to_database(host, user, password, database):
     return mysql.connector.connect(
         host = host,
@@ -19,7 +19,7 @@ def connect_to_database(host, user, password, database):
         database = database
     )
 
-#fun to pick a table to update
+#func to pick a table to update
 def switcht_case(pos,cursor, df_excel):
     if pos == 0:
         return users(cursor,df_excel)
@@ -34,14 +34,6 @@ def switcht_case(pos,cursor, df_excel):
     elif pos == 5:
         return productivity(cursor, df_excel)
 
-list_excel = (
-        'Users',
-        'Tasks',
-        'CheckInCheckOut',
-        'Projects',
-        'Boxes',
-        'Productivity'
-    )
 
 def main():
 
@@ -51,16 +43,15 @@ def main():
     db_password = 'Lfpp0811.*'
     db_name = 'productivity_app'
 
-
-
-    pos = 0
-    while pos >= 0:
-        pos = menu()
-        if pos == -1:
+    sheet_excel = 0
+    while sheet_excel >= 0:
+        excel_file_path = str(input("Document to read: "))
+        sheet_excel = sheet_number(excel_file_path)
+        if sheet_excel == -1:
             break
         #Read ecxel book and page 
-        excel_file_path = 'PRODUCTION_test.xlsx'
-        df_excel = pd.read_excel(excel_file_path, sheet_name=list_excel[pos])
+        
+        df_excel = pd.read_excel(excel_file_path, sheet_name = sheet_names_excel(excel_file_path)[sheet_excel])
         df_excel.fillna(value=0,inplace=True) #add zero on the empty fields
             #print(df_excel)
     
@@ -73,7 +64,7 @@ def main():
         cursor = connection.cursor()
 
         #Update or add table selected
-        switcht_case(pos,cursor, df_excel)
+        switcht_case(sheet_excel,cursor, df_excel)
 
         #commint changes and close the db
         connection.commit()

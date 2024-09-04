@@ -28,3 +28,5 @@ nombre_bd = 'productivity_app'
 
 # Crear la cadena de conexión
 engine = create_engine(f'{dialecto}://{usuario}:{contraseña}@{host}/{nombre_bd}')
+
+IDEA: CREAR UN DICCIONARIO PARA ALMACENAR "KEY" = COLUMNA DE LA DB. "VALUE" = COLUMNA DE EXCEL
