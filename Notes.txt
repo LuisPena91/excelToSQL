@@ -1,5 +1,7 @@
 python -m pip install --<<upgrade>> pip --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org
 
+myenv\Scripts\activate
+
 https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4
 
 #Conectar a la BD
@@ -30,3 +32,8 @@ nombre_bd = 'productivity_app'
 engine = create_engine(f'{dialecto}://{usuario}:{contraseña}@{host}/{nombre_bd}')
 
 IDEA: CREAR UN DICCIONARIO PARA ALMACENAR "KEY" = COLUMNA DE LA DB. "VALUE" = COLUMNA DE EXCEL
+
+
+Para el jueves 05:
+crear un ciclo que recorra cada una de las columnas de la tabla de SQL
+y pregunte que columna de la hoja de excel le desea asignar (o asociar)
