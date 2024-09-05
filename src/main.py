@@ -68,8 +68,9 @@ def main():
                 if sheet_name:
                     print(f"Sheet {sheet_name} already picked, select the SQL table")
                     break
-                excel_file_path = "PRODUCTION_test.xlsx" #str(input("Document to read: "))
-                sheet_excel = sheet_number(excel_file_path)
+                else:
+                    excel_file_path = "PRODUCTION_test.xlsx" #str(input("Document to read: "))
+                    sheet_excel = sheet_number(excel_file_path)
                 if sheet_excel == -1:
                     break    
                 #Read ecxel book and page 
@@ -77,24 +78,35 @@ def main():
                 df_excel = pd.read_excel(excel_file_path, sheet_name = sheet_name )
                 df_excel.fillna(value=0,inplace=True) #add zero on the empty fields
                 print(f"Sheet selected: {sheet_name}")
+                print(df_excel)
                     #print(df_excel)
                 if table_selected and sheet_name:
                     m = 3
+                    break
         if m == 3:
 
             while len(dic_update) < len(column_name_sql(sql_database,table_selected)): 
-                pos_column = column_selection(sql_database,table_selected)
-                column_selected = column_name_sql(sql_database,table_selected)[pos_column][0]
-
-                columns_excel = df_excel.columns
-                excel_column_selected = columns_excel[column_number(columns_excel)]
-
-                if column_selected not in dic_update:
-                    dic_update[column_selected] = excel_column_selected
-                else:
-                    print(f"{column_selected} already asigned to {dic_update[column_selected]}")
+                #pos_column = column_selection(sql_database,table_selected)
+                #column_selected = column_name_sql(sql_database,table_selected)[pos_column][0]
+                column_names = column_name_sql(sql_database,table_selected)
+                for j in range(len(column_names)):
+                    print(f"Select an excel column for the SQL column:  {column_names[j][0]}.")
+                    columns_excel = df_excel.columns
+                    excel_column_selected = columns_excel[column_number(columns_excel)]
+                    dic_update[column_names[j][0]] = excel_column_selected
+                    #if column_name_sql(sql_database,table_selected)[j][0] not in dic_update:
+                    #    dic_update[column_name_sql(sql_database,table_selected)[j][0]] = excel_column_selected
+                    #else:
+                    #    print(f"{column_name_sql(sql_database,table_selected)[j][0]} already asigned to {dic_update[column_selected]}")
             print(dic_update)
-            values = list(dic_update.values())
+            dic_keys = tuple(dic_update.keys())
+            dic_values = tuple(dic_update.values())
+
+            print("Diccionario=")
+            print(dic_keys)
+            print(dic_values)
+            print(table_selected)
+
     
             #db connection
             try:
@@ -106,12 +118,36 @@ def main():
 
             #Update or add table selected
             #switcht_case(sheet_excel,cursor, df_excel)
-            for index, row in df_excel.iterrows():
-                cursor.execute(f"SELECT * FROM {table_selected} WHERE {values[0]} = {row[dic_update[values[0]]]}")
-                result = cursor.fetchone()
+            for i in range(len(dic_keys)-1):
+                for index, row in df_excel.iterrows():
+                    cursor.execute(f"SELECT * FROM {table_selected} WHERE {dic_keys[0]} = {row[dic_values[0]]}")
+                    result = cursor.fetchone()    
+                    if result:
+                        keyS = dic_keys[i+1]
+                        valueS = row[dic_values[i+1]]
+                        keyW = dic_keys[0]
+                        valueW = row[dic_values[0]]
+                        print(keyS," - ",valueS," | ",keyW," - ",valueW)
 
-                if result:
-                    print("------*****AQUI VOY*****------")
+                        cursor.execute(
+                                f"UPDATE {table_selected} SET {keyS} = '{valueS}' WHERE {keyW} = '{valueW}'")
+                        
+                        print(f"updated value = {keyS} -  whit the value = {valueS}")
+                    else:
+                        row_keys = f"({', '.join(dic_update.keys())})"
+                        row_values = []
+                        for i in range(len(dic_keys)):
+                            row_values.append(row[dic_values[i]])
+                        row_values = tuple(row_values)
+                        print(row_values)
+                        try:
+                            cursor.execute(
+                            f"INSERT INTO {table_selected} {row_keys} VALUES {row_values} "
+                            )
+                            print(f"Inserted values = {row_keys} -  whit the values = {row_values}")
+                        except mysql.connector.Error as err:
+                            print(f"Error: {err}")
+                    #print("------*****AQUI VOY*****------")
             #commint changes and close the db
             connection.commit()
             cursor.close()

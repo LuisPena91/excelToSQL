@@ -113,3 +113,5 @@ def productivity(cursor, df_excel):
                 (row['OT'],row['Date'], row['StartTime'], row['EndTime'], row['idT'], row['idP'], row['Folders'], row['Images'], row['Status'], row['caNumber'], row['Boxes_Id'], row['Time'])
             )
             print(f"New row: {row['OT']}")
+
+

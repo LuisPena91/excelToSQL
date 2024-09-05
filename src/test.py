@@ -1,14 +1,15 @@
-import numpy as np
+persona = {
+    "nombre": "Juan",
+    "edad": 30,
+    "ciudad": "Madrid"
+}
+listVal = []
 
-# Crear una matriz 3x3
-matriz_np = np.empty((5,5))
+tupKey = tuple(persona.keys())
+for i in range(len(tupKey)):
+    listVal.append(persona[tupKey[i]])
 
-x = 1
-for i in range(5):
-    for j in range(5):
-        matriz_np[i,j] = x
-        x+=1
+tupleVal = f"({', '.join(listVal)})"
 
-# Imprimir la matriz
-print(matriz_np[0][4])
-        
+print(listVal)
+print(tupleVal)

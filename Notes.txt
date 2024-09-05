@@ -37,3 +37,13 @@ IDEA: CREAR UN DICCIONARIO PARA ALMACENAR "KEY" = COLUMNA DE LA DB. "VALUE" = CO
 Para el jueves 05:
 crear un ciclo que recorra cada una de las columnas de la tabla de SQL
 y pregunte que columna de la hoja de excel le desea asignar (o asociar)
+
+
+
+
+                if result:
+                    for i in range(len(dic_keys)-1):
+                        cursor.execute(
+                            f"UPDATE {table_selected} SET {dic_keys[i+1]} = {row[dic_values[i+1]]} WHERE {dic_keys[0]} = {row[dic_values[0]]}"
+                        )
+                        print(f"updated value = {dic_keys[i+1]} -  whit the value = {row[dic_update[dic_keys[i+1]]]}")

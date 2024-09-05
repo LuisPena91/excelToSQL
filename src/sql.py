@@ -47,6 +47,7 @@ def column_selection(sql_database,table_selected):
     return pos_column-1
 
 
+
 def main():
 
     dic_update={}

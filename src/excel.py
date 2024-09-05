@@ -17,6 +17,5 @@ def column_number(columns):
     print('----Excel Columns----')
     for i in range(len(columns)):
         print(f"{i+1}:  {columns[i]}")
-    print("0.  EXIT")
     column = int(input('Select a column: '))
     return column-1
