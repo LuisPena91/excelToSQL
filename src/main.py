@@ -1,12 +1,11 @@
-import pandas as pd
 import mysql.connector
-from excel import sheet_number,sheet_names_excel, column_number,read_excel
+from excel import sheet_number,sheet_names_excel, column_number,read_excel, df_null_values
 from sql import connect_to_database,table_name_sql, table_selection, column_selection, column_name_sql
 from menu import menu1
 
 
 def main():
-    #start somo variables
+    #start some variables
     dic_update = {}
     sheet_name = ""
     table_selected = ""
@@ -47,7 +46,7 @@ def main():
                 #Read excel book and page 
                 sheet_name = sheet_names_excel(excel_file_path)[sheet_excel]
                 df_excel = read_excel(excel_file_path, sheet_name) #create the data frame (using pandas)
-                df_excel.fillna(value=0,inplace=True) #add zero on the empty fields
+                df_excel = df_null_values(df_excel) #Null values control
                 print(f"Sheet selected: {sheet_name}")
                 #print(df_excel)
                 #if the user already select a sql table and excel sheet, the system will navigate to next step
@@ -79,10 +78,19 @@ def main():
             cursor = connection.cursor()
 
             for index, row in df_excel.iterrows():
-                cursor.execute(f"SELECT * FROM {table_selected} WHERE {dic_keys[0]} = {row[dic_values[0]]}")
-                result = cursor.fetchone()    
+                if type(row[dic_values[0]]) == str: #if the PK is a string
+                    try:
+                        cursor.execute(f"SELECT * FROM {table_selected} WHERE {dic_keys[0]} = '{row[dic_values[0]]}'")
+                    except mysql.connector.Error as err:
+                        print(f"Error: {err}")
+                else:   
+                    try:
+                       cursor.execute(f"SELECT * FROM {table_selected} WHERE {dic_keys[0]} = {row[dic_values[0]]}")
+                    except mysql.connector.Error as err:
+                       print(f"Error: {err}")
+                result = cursor.fetchone()
                 if result:
-                    print(f"For {dic_keys[0]}, will be update: ")
+                    print(f"For {dic_keys[0]}: {row[dic_values[0]]}: ")
                     for i in range(len(dic_keys)-1): #Here the system iterate on all key columns to update all
                         try:
                             cursor.execute(

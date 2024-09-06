@@ -45,25 +45,3 @@ def column_selection(sql_database,table_selected):
         print(f"{j+1}:  {column_name_sql(sql_database,table_selected)[j][0]}")
     pos_column = int(input(f'Select a SQL column from {table_selected} to update: '))
     return pos_column-1
-
-
-
-def main():
-
-    dic_update={}
-    sql_database = 'timesheet_app' #str(input("Data base name: "))
-    pos_table = table_selection(sql_database)
-    table_selected = table_name_sql(sql_database)[pos_table][0]
-    print(f"Table selected: {table_selected}")
-    pos_column = column_selection(sql_database,table_selected)
-    column_selected = column_name_sql(sql_database,table_selected)[pos_column][0]
-    print(f"Column selected: {column_selected}")
-    
-    if column_selected not in dic_update:
-        dic_update[column_selected] = "excel selection"
-    else:
-        print(f"{column_selected} already asigned to {dic_update[column_selected]}")
-    print(dic_update)
-
-if __name__=="__main__":
-   main()

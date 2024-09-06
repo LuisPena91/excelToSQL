@@ -11,4 +11,4 @@ def menu1():
             else:
                 print("Select an option from the list")
         except ValueError:
-            print("Input a true value")
+            print("Input a true value, between 0 and 2")
