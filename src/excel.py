@@ -1,4 +1,8 @@
 import pandas as pd
+
+#Func to read the excel book
+def read_excel(file_path, sheet_name):
+    return pd.read_excel(file_path,sheet_name=sheet_name)
 #func to list the sheets in the excel book
 def sheet_names_excel(excel_file_path):
     excel_file = pd.ExcelFile(excel_file_path)

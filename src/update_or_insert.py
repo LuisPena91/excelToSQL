@@ -114,4 +114,18 @@ def productivity(cursor, df_excel):
             )
             print(f"New row: {row['OT']}")
 
+#func to pick a table to update
+def switcht_case(pos,cursor, df_excel):
+    if pos == 0:
+        return users(cursor,df_excel)
+    elif pos == 1:
+        return tasks(cursor,df_excel)
+    elif pos == 2:
+        return checkinout(cursor, df_excel)
+    elif pos == 3:
+        return projects(cursor, df_excel)
+    elif pos == 4:
+        return boxes(cursor, df_excel)
+    elif pos == 5:
+        return productivity(cursor, df_excel)
 
