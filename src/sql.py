@@ -12,7 +12,7 @@ def connect_to_database(sql_database):
 def table_name_sql(sql_database):
     connection = connect_to_database(sql_database)
     cursor = connection.cursor()
-    cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'productivity_app'")
+    cursor.execute(f"SELECT table_name FROM information_schema.tables WHERE table_schema = '{sql_database}'")
     tables_names = cursor.fetchall()
 
     connection.commit()

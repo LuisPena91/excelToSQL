@@ -54,14 +54,20 @@ def main():
                     m = 3
                     break
         if m == 3: #in this part is the "main" program funtion, is to send the data from excel to SQL
-            while len(dic_update) < len(column_name_sql(sql_database,table_selected)): #here de 'dic_update is empty
-                column_names = column_name_sql(sql_database,table_selected)
-                #update de dic assigning as a key sql columns and as a value excel sheet columns
-                # the dictionary is to have the key and values in the same position for the follow tuples 
-                for j in range(len(column_names)): 
-                    print(f"Select an excel column for the SQL column:  {column_names[j][0]}.")
-                    dic_update[column_names[j][0]] = df_excel.columns[column_number(df_excel.columns)]
-            #print(dic_update)
+            op = True
+            while op:
+                while len(dic_update) < len(column_name_sql(sql_database,table_selected)): #here de 'dic_update is empty
+                    column_names = column_name_sql(sql_database,table_selected)
+                    #update de dic assigning as a key sql columns and as a value excel sheet columns
+                    # the dictionary is to have the key and values in the same position for the follow tuples 
+                    for j in range(len(column_names)): 
+                        print(f"Select an excel column for the SQL column:  {column_names[j][0]}.")
+                        dic_update[column_names[j][0]] = df_excel.columns[column_number(df_excel.columns)]
+                    print("Those are the relations:")
+                    for key,value in dic_update.items(): print(f"SQL: {key} --> Excel: {value}")
+                    con = int(input(" - To Continue press 1 \n - To Change press 2 \n - : "))
+                    if con == 1: op = False 
+                    else: dic_update={}
             dic_keys = tuple(dic_update.keys())
             dic_values = tuple(dic_update.values())
 
@@ -70,24 +76,26 @@ def main():
             #print(dic_values)
             #print(table_selected)
 
-            #db connection
-            try:
+            
+            try: #db connection
                 connection = connect_to_database(sql_database)
+                print("Connection success")
             except mysql.connector.Error as err:
+                print('CONNECTION ERROR')
                 print(f"Error: {err}")
             cursor = connection.cursor()
-
+            end = False
             for index, row in df_excel.iterrows():
-                if type(row[dic_values[0]]) == str: #if the PK is a string
-                    try:
-                        cursor.execute(f"SELECT * FROM {table_selected} WHERE {dic_keys[0]} = '{row[dic_values[0]]}'")
-                    except mysql.connector.Error as err:
-                        print(f"Error: {err}")
-                else:   
-                    try:
-                       cursor.execute(f"SELECT * FROM {table_selected} WHERE {dic_keys[0]} = {row[dic_values[0]]}")
-                    except mysql.connector.Error as err:
-                       print(f"Error: {err}")
+                if end: break
+                try: #The PK is being treated as a string, if you want to treat it as an integer, use the commented part bellow
+                    cursor.execute(f"SELECT * FROM {table_selected} WHERE {dic_keys[0]} = '{row[dic_values[0]]}'")
+                except mysql.connector.Error as err:
+                    print(f"Error: {err}")
+                    end = True
+                #try:
+                    #cursor.execute(f"SELECT * FROM {table_selected} WHERE {dic_keys[0]} = {row[dic_values[0]]}")
+                #except mysql.connector.Error as err:
+                    #print(f"Error: {err}")
                 result = cursor.fetchone()
                 if result:
                     print(f"For {dic_keys[0]}: {row[dic_values[0]]}: ")
@@ -97,7 +105,10 @@ def main():
                                     f"UPDATE {table_selected} SET {dic_keys[i+1]} = '{row[dic_values[i+1]]}' WHERE {dic_keys[0]} = '{row[dic_values[0]]}'")
                             print(f"-  Updated value = {dic_keys[i+1]} -->  whit the value = {row[dic_values[i+1]]}")
                         except mysql.connector.Error as err:
+                            print("UPDATE ERROR")
                             print(f"Error: {err}")
+                            end = True
+                            break
                 else:
                     #In this section I created a tuple 'row_keys' with an especific format
                     #an empty list 'row_values'
@@ -113,9 +124,12 @@ def main():
                         cursor.execute(
                         f"INSERT INTO {table_selected} {row_keys} VALUES {row_values} "
                         )
-                        print(f"-  Inserted values = {row_keys} -->  whit the values = {row_values}")
+                        print(f"\nInserted values = {row_keys} -->  whit the values = {row_values}")
                     except mysql.connector.Error as err:
+                        print("INSET ERROR")
                         print(f"Error: {err}")
+                        end = True
+                        
                     
             #commit changes and close the db
             connection.commit()

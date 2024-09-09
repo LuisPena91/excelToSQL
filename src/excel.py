@@ -32,4 +32,8 @@ def df_null_values(df):
             df[c] = df[c].fillna(0)
         elif pd.api.types.is_datetime64_any_dtype(df[c]): #to dates
             df[c] = df[c].fillna(pd.Timestamp('1900-01-01'))
+        elif pd.api.types.is_timedelta64_dtype(df[c]): #to time delta
+            df[c] = df[c].fillna(pd.Timedelta('0 days'))
+        elif pd.api.types.is_time_dtype(df[c]): #to time
+            df[c] = df[c].fillna(pd.Timestamp('00:00:00').time())
     return df
