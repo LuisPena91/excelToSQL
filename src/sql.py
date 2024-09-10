@@ -1,11 +1,13 @@
 import mysql.connector
+from sqlcredentials import user, password
+
 
 #db credentials
 def connect_to_database(sql_database):
     return mysql.connector.connect(
         host = 'localhost',
-        user = 'root',
-        password = 'Lfpp0811.*',
+        user = user(),
+        password = password(),
         database = sql_database
     )
 #func to look for the tables who belong to the DB
