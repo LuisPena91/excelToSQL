@@ -88,6 +88,8 @@ def main():
                 print(f"Error: {err}")
             cursor = connection.cursor()
             end = False
+            updateQ = 0
+            insertQ = 0
             for index, row in df_excel.iterrows():
                 if end: break
                 try: #The PK is being treated as a string, if you want to treat it as an integer, use the commented part bellow
@@ -112,6 +114,7 @@ def main():
                             print(f"Error: {err}")
                             end = True
                             break
+                    updateQ += 1
                 else:
                     #In this section I created a tuple 'row_keys' with an especific format
                     #an empty list 'row_values'
@@ -128,18 +131,18 @@ def main():
                         f"INSERT INTO {table_selected} {row_keys} VALUES {row_values} "
                         )
                         print(f"\nInserted values = {row_keys} -->  whit the values = {row_values}")
+                        insertQ += 1
                     except mysql.connector.Error as err:
                         print("INSET ERROR")
                         print(f"Error: {err}")
-                        end = True
-                        
-                    
+                        end = True   
             #commit changes and close the db
             connection.commit()
             cursor.close()
             connection.close()
             break
-
+    print(f' - Total row Updated: {updateQ}')
+    print(f' - Total row Inserted: {insertQ}')
     print('End of the program')
 if __name__=="__main__":
     main()
