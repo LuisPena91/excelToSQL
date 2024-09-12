@@ -1,4 +1,5 @@
 import pandas as pd
+from menu import menu2
 
 #Func to read the excel book
 def read_excel(file_path, sheet_name):
@@ -10,18 +11,19 @@ def sheet_names_excel(excel_file_path):
     return sheet_names
 #func to select a sheet
 def sheet_number(excel_file_path):
-    print('----Excel Tables----')
+    print('----> Excel Tables <----')
     for i in range(len(sheet_names_excel(excel_file_path))):
-        print(f"{i+1}:  {sheet_names_excel(excel_file_path)[i]}")
-    print("0.  Return")
-    sheet_excel = int(input('Select a table to update:'))
+        print(f" - {i+1}:  {sheet_names_excel(excel_file_path)[i]}")
+    print(" - 0:  Return")
+    sheet_excel = menu2(i+1)
     return sheet_excel-1
 #fun to select a column from the sheet
 def column_number(columns):
     print('----Excel Columns----')
     for i in range(len(columns)):
-        print(f"{i+1}:  {columns[i]}")
-    column = int(input('Select a column: '))
+        print(f" - {i+1}:  {columns[i]}")
+    print(" - 0:  Start over")
+    column = menu2(i+1)
     return column-1
 #fun to control the null values
 def df_null_values(df):

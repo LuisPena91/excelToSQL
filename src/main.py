@@ -23,8 +23,7 @@ def main():
                     break
                 sql_database = str(input("Data base name: "))
                 pos_table = table_selection(sql_database)
-                if pos_table == -1: #the option 0 is to return with out pick a table
-                    break
+                if pos_table == -1:break #the option 0 is to return with out pick a table
                 table_selected = table_name_sql(sql_database)[pos_table][0]
                 print(f"Table selected: {table_selected}.")
                 #if the user already select a sql table and excel sheet, the system will navigate to next step
@@ -56,13 +55,17 @@ def main():
         if m == 3: #in this part is the "main" program funtion, is to send the data from excel to SQL
             op = True
             while op:
-                while len(dic_update) < len(column_name_sql(sql_database,table_selected)): #here de 'dic_update is empty
+                while len(dic_update) < len(column_name_sql(sql_database,table_selected)): #here the dic_update is empty
                     column_names = column_name_sql(sql_database,table_selected)
                     #update de dic assigning as a key sql columns and as a value excel sheet columns
                     # the dictionary is to have the key and values in the same position for the follow tuples 
                     for j in range(len(column_names)): 
                         print(f"Select an excel column for the SQL column:  {column_names[j][0]}.")
-                        dic_update[column_names[j][0]] = df_excel.columns[column_number(df_excel.columns)]
+                        column_n = column_number(df_excel.columns)
+                        if column_n == -1: #option 0 to start over
+                            dic_update = {}
+                            break
+                        dic_update[column_names[j][0]] = df_excel.columns[column_n]
                     print("Those are the relations:")
                     for key,value in dic_update.items(): print(f"SQL: {key} --> Excel: {value}")
                     con = int(input(" - To Continue press 1 \n - To Change press 2 \n - : "))
