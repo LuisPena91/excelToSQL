@@ -90,17 +90,23 @@ def main():
             end = False
             updateQ = 0
             insertQ = 0
+            op1 = int(input(" * For PK str press 1 \n * for PK int press 2 \n --> "))
             for index, row in df_excel.iterrows():
                 if end: break
-                try: #The PK is being treated as a string, if you want to treat it as an integer, use the commented part bellow
-                    cursor.execute(f"SELECT * FROM {table_selected} WHERE {dic_keys[0]} = '{row[dic_values[0]]}'")
-                except mysql.connector.Error as err:
-                    print(f"Error: {err}")
-                    end = True
-                #try:
-                    #cursor.execute(f"SELECT * FROM {table_selected} WHERE {dic_keys[0]} = {row[dic_values[0]]}")
-                #except mysql.connector.Error as err:
-                    #print(f"Error: {err}")
+                if op1 == 1:
+                    try: 
+                        cursor.execute(f"SELECT * FROM {table_selected} WHERE {dic_keys[0]} = '{row[dic_values[0]]}'")
+                    except mysql.connector.Error as err:
+                        print(f"Error: {err}")
+                        end = True
+                elif op1 == 2:
+                    try:
+                        cursor.execute(f"SELECT * FROM {table_selected} WHERE {dic_keys[0]} = {row[dic_values[0]]}")
+                    except mysql.connector.Error as err:
+                        print(f"Error: {err}")
+                        end = True
+                else:
+                    break
                 result = cursor.fetchone()
                 if result:
                     print(f"For {dic_keys[0]}: {row[dic_values[0]]}: ")
